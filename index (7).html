@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Astra Software Training &amp; Placements</title>
+  <meta name="description" content="Astra Software Training &amp; Placements: software development training, Generative AI courses, industry-oriented learning, practical projects and career preparation.">
+
+  <!--
+    ============================================================
+    ASTRA WEBSITE — single file (HTML + CSS + JS)
+    - Works when opened directly from disk (file://), no server needed.
+    - Enquiries are sent to Google Sheets via the Apps Script Web App
+      (SCRIPT_URL in the script at the bottom of this file).
+    - Logo: place the official logo file named "astra-logo.png" in the
+      same folder as this file. If it is missing, a text wordmark is shown.
+    ============================================================
+  -->
+
+  <style>
+    /* ---------- Design tokens ---------- */
+    :root {
+      --bg: #070b16;
+      --bg-soft: #0c1224;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-strong: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #e6ecf8;
+      --text-muted: #94a3b8;
+      --accent: #22d3ee;
+      --accent-2: #3b82f6;
+      --danger: #f87171;
+      --success: #34d399;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --max-width: 1184px;
+      --gutter: 24px;
+      --header-h: 80px;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    h1, h2, h3, h4 { line-height: 1.2; margin: 0; font-weight: 700; }
+    p { margin: 0; }
+    button, input, select, textarea { font: inherit; }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+    .section { position: relative; padding: 96px 0; }
+    .section-header { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .section-title { font-size: clamp(1.9rem, 4vw, 2.75rem); margin-top: 18px; }
+    .section-sub { margin-top: 14px; color: var(--text-muted); font-size: 1.05rem; }
+    .gradient-text {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Ambient glows (decorative) */
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow--cyan { background: var(--accent); }
+    .glow--blue { background: var(--accent-2); }
+
+    /* Glass surfaces */
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn--primary {
+      color: #04111c;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.25);
+    }
+    .btn--primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(34, 211, 238, 0.35); }
+    .btn--ghost {
+      color: var(--text);
+      background: var(--surface-strong);
+      border-color: var(--border);
+    }
+    .btn--ghost:hover { transform: translateY(-2px); border-color: rgba(34, 211, 238, 0.5); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn--block { width: 100%; }
+    .btn-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--accent); font-weight: 600; font-size: 0.92rem;
+    }
+    .btn-link:hover { text-decoration: underline; }
+
+    /* Pills / tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    /* ---------- Header / Navigation ---------- */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--header-h);
+      background: rgba(7, 11, 22, 0.75);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand img { height: 36px; width: auto; }
+    .brand-text {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      display: none;
+    }
+    .brand-text.is-visible { display: inline; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+      margin: 0; padding: 0;
+    }
+    .nav-links a {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .nav-links a:hover, .nav-links a.is-active { color: var(--text); background: var(--surface-strong); }
+    .nav-cta { white-space: nowrap; min-height: 42px; padding: 10px 18px; }
+    .menu-toggle {
+      display: none;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      width: 44px; height: 44px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .menu-toggle span,
+    .menu-toggle span::before,
+    .menu-toggle span::after {
+      display: block;
+      width: 18px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      position: relative;
+    }
+    .menu-toggle span::before, .menu-toggle span::after { content: ""; position: absolute; }
+    .menu-toggle span::before { top: -6px; }
+    .menu-toggle span::after { top: 6px; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding-top: calc(var(--header-h) + 64px);
+      padding-bottom: 80px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero h1 { font-size: clamp(2.3rem, 5.2vw, 4rem); letter-spacing: -0.02em; margin-top: 22px; }
+    .hero-lead {
+      margin-top: 22px;
+      max-width: 560px;
+      color: var(--text-muted);
+      font-size: 1.08rem;
+    }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+    .trust-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .trust-item { display: inline-flex; align-items: center; gap: 8px; }
+    .trust-item::before {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 480px;
+      margin-left: auto;
+    }
+    .hero-visual__core {
+      position: absolute;
+      inset: 8%;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(34, 211, 238, 0.35), transparent 55%),
+        radial-gradient(circle at 75% 80%, rgba(59, 130, 246, 0.4), transparent 60%),
+        linear-gradient(160deg, #0f1a33, #0a1024);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .hero-visual__core::after {
+      /* Abstract "neural" lines */
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at center, #000 30%, transparent 75%);
+    }
+    .hero-visual__pill {
+      position: absolute;
+      z-index: 2;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(12, 18, 36, 0.85);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      backdrop-filter: blur(10px);
+    }
+    .hero-visual__pill--top { top: 6%; left: -4%; }
+    .hero-visual__pill--bottom { bottom: 8%; right: -2%; }
+    .hero-visual__pill::before {
+      content: "";
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      margin-right: 8px;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* ---------- Why Astra cards ---------- */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      padding: 32px;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .feature-card:hover { transform: translateY(-4px); border-color: rgba(34, 211, 238, 0.35); }
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(34,211,238,0.18), rgba(59,130,246,0.18));
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-size: 1.3rem;
+      margin-bottom: 22px;
+    }
+    .feature-card h3 { font-size: 1.12rem; }
+    .feature-card p { margin-top: 12px; color: var(--text-muted); font-size: 0.95rem; }
+
+    /* ---------- Courses ---------- */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    .course-card { padding: 36px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .course-card--featured { border-color: rgba(34, 211, 238, 0.4); }
+    .course-badges { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .course-meta { color: var(--text-muted); font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; }
+    .course-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-top: 22px; }
+    .course-title-row h3 { font-size: 1.6rem; }
+    .course-price { font-size: 1.5rem; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .course-desc { margin-top: 14px; color: var(--text-muted); }
+    .course-topics-label {
+      margin-top: 26px;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .course-topics { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .course-cta { margin-top: auto; padding-top: 32px; }
+    .course-card .glow { width: 220px; height: 220px; top: -90px; right: -70px; }
+
+    .sub-heading { text-align: center; font-size: 1.4rem; margin: 84px 0 32px; }
+
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      counter-reset: step;
+    }
+    .journey-step { padding: 26px; position: relative; }
+    .journey-step__num {
+      font-size: 0.8rem; font-weight: 700; color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .journey-step h4 { font-size: 1.1rem; margin-top: 10px; }
+    .journey-step p { margin-top: 10px; color: var(--text-muted); font-size: 0.9rem; }
+    .journey-step__bar {
+      margin-top: 18px;
+      height: 4px; border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: 0.8;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .pillar { padding: 24px; }
+    .pillar__icon { color: var(--accent); font-size: 1.2rem; margin-bottom: 14px; }
+    .pillar h4 { font-size: 1rem; }
+    .pillar p { margin-top: 8px; color: var(--text-muted); font-size: 0.88rem; }
+
+    /* ---------- Projects ---------- */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .project-card:hover { transform: translateY(-4px); border-color: rgba(34, 211, 238, 0.35); }
+    .project-card--large { grid-column: span 7; }
+    .project-card--medium { grid-column: span 5; }
+    .project-card--half { grid-column: span 6; }
+    .project-visual {
+      height: 200px;
+      position: relative;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34,211,238,0.25), transparent 50%),
+        linear-gradient(135deg, #132347, #0b1328);
+      border-bottom: 1px solid var(--border);
+    }
+    .project-visual--alt-1 { background: radial-gradient(circle at 80% 20%, rgba(59,130,246,0.3), transparent 55%), linear-gradient(135deg, #1a1f3d, #0b1024); }
+    .project-visual--alt-2 { background: radial-gradient(circle at 30% 80%, rgba(34,211,238,0.22), transparent 55%), linear-gradient(135deg, #0f2a3a, #0a1222); }
+    .project-visual--alt-3 { background: radial-gradient(circle at 70% 70%, rgba(59,130,246,0.28), transparent 55%), linear-gradient(135deg, #14213d, #0b1426); }
+    .project-visual__label {
+      position: absolute; top: 16px; left: 16px;
+    }
+    .project-body { padding: 28px; display: flex; flex-direction: column; flex: 1; }
+    .project-body h3 { font-size: 1.35rem; }
+    .project-body p { margin-top: 12px; color: var(--text-muted); font-size: 0.95rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .project-body .btn-link { margin-top: auto; padding-top: 22px; }
+
+    /* ---------- Founder ---------- */
+    .founder-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .founder-visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      max-width: 400px;
+      width: 100%;
+      margin: 0 auto;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(34,211,238,0.25), transparent 60%),
+        linear-gradient(170deg, #142448, #0a1024);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .founder-visual__initial {
+      font-size: 6rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.12);
+    }
+    .founder-badge {
+      position: absolute;
+      left: 20px; right: 20px; bottom: 20px;
+      padding: 18px 20px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      border-radius: var(--radius-md);
+    }
+    .founder-badge strong { display: block; font-size: 1rem; }
+    .founder-badge span { color: var(--text-muted); font-size: 0.85rem; }
+    .founder-badge a {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: grid; place-items: center;
+      background: var(--surface-strong); border: 1px solid var(--border);
+      color: var(--accent); flex-shrink: 0;
+    }
+    .founder-badge a:hover { border-color: var(--accent); }
+    .founder-badge svg { width: 20px; height: 20px; }
+    .founder-content h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin-top: 18px; }
+    .founder-role { margin-top: 12px; color: var(--accent); font-weight: 600; }
+    .founder-highlights { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .founder-bio { margin-top: 24px; color: var(--text-muted); font-size: 1.02rem; }
+    .founder-social { margin-top: 30px; }
+    .social-link {
+      display: inline-flex; align-items: center; gap: 14px;
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .social-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .social-link__icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, #f58529, #dd2a7b 55%, #8134af);
+      color: #fff;
+    }
+    .social-link__icon svg { width: 18px; height: 18px; }
+    .social-link small { display: block; color: var(--text-muted); font-size: 0.8rem; }
+
+    /* ---------- Reviews ---------- */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .review-card { padding: 32px; display: flex; flex-direction: column; }
+    .review-stars { color: #facc15; letter-spacing: 3px; font-size: 0.95rem; }
+    .review-text { margin-top: 16px; color: var(--text); font-size: 1rem; flex: 1; }
+    .review-author { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.88rem; }
+    .review-placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+      border: 1px dashed rgba(148, 163, 184, 0.45);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+    }
+
+    /* ---------- Enquiry form ---------- */
+    .enquiry-wrap { position: relative; }
+    .enquiry-card { padding: 48px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .form-field { display: flex; flex-direction: column; gap: 8px; }
+    .form-field--full { grid-column: 1 / -1; }
+    .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    .form-label .req { color: var(--accent); margin-left: 2px; }
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(7, 11, 22, 0.6);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-input::placeholder, .form-textarea::placeholder { color: #64748b; }
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18);
+    }
+    .form-input[aria-invalid="true"], .form-textarea[aria-invalid="true"] { border-color: var(--danger); }
+    .field-error { color: var(--danger); font-size: 0.82rem; min-height: 1em; }
+
+    .choice-group { display: grid; gap: 10px; }
+    .choice-group--course { grid-template-columns: 1fr 1fr; }
+    .choice-group--status { grid-template-columns: repeat(3, 1fr); }
+    .choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .choice {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(7, 11, 22, 0.6);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .choice::before {
+      content: "";
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      flex-shrink: 0;
+    }
+    .choice:hover { border-color: rgba(34, 211, 238, 0.4); }
+    .choice:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(34, 211, 238, 0.08);
+    }
+    .choice:has(input:checked)::before {
+      border-color: var(--accent);
+      background: radial-gradient(circle, var(--accent) 45%, transparent 50%);
+    }
+    .choice:has(input:focus-visible) { box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25); }
+
+    .form-submit { margin-top: 32px; }
+    .form-note { margin-top: 14px; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+    .form-status {
+      margin-top: 20px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      display: none;
+    }
+    .form-status.is-success { display: block; background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.45); color: #a7f3d0; }
+    .form-status.is-error { display: block; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.45); color: #fecaca; }
+    .whatsapp-channel {
+      margin-top: 28px;
+      display: flex; justify-content: center;
+    }
+
+    /* ---------- Footer ---------- */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg-soft);
+      padding: 72px 0 0;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+      gap: 48px;
+    }
+    .footer-brand p { margin-top: 18px; color: var(--text-muted); max-width: 340px; font-size: 0.95rem; }
+    .footer-socials { display: flex; gap: 12px; margin-top: 22px; }
+    .footer-socials a {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: grid; place-items: center;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text-muted);
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .footer-socials a:hover { color: var(--accent); border-color: var(--accent); }
+    .footer-socials svg { width: 18px; height: 18px; }
+    .footer-col h3 { font-size: 0.95rem; margin-bottom: 18px; }
+    .footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+    .footer-col a { color: var(--text-muted); font-size: 0.93rem; }
+    .footer-col a:hover { color: var(--accent); }
+    .contact-line { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.93rem; }
+    .contact-line svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+    .footer-bottom {
+      margin-top: 56px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .footer-bottom nav { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-bottom a:hover { color: var(--accent); }
+
+    /* ---------- Reveal-on-scroll ---------- */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.is-visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1100px) {
+      .journey { grid-template-columns: repeat(3, 1fr); }
+      .pillars { grid-template-columns: repeat(3, 1fr); }
+      .nav-links a { padding: 8px 9px; font-size: 0.88rem; }
+    }
+
+    @media (max-width: 960px) {
+      .hero { min-height: auto; padding-bottom: 64px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+      .hero-visual { margin: 0 auto; max-width: 420px; }
+      .feature-grid, .review-grid { grid-template-columns: repeat(2, 1fr); }
+      .course-grid { grid-template-columns: 1fr; }
+      .project-card--large, .project-card--medium, .project-card--half { grid-column: 1 / -1; }
+      .founder-grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .menu-toggle { display: inline-flex; }
+      .nav-links {
+        position: fixed;
+        top: var(--header-h);
+        left: 0; right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding: 16px var(--gutter) 24px;
+        background: rgba(7, 11, 22, 0.98);
+        border-bottom: 1px solid var(--border);
+        transform: translateY(-120%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+      .nav-links.is-open { transform: none; opacity: 1; pointer-events: auto; }
+      .nav-links a { padding: 14px 16px; font-size: 1rem; }
+      .nav-cta { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --gutter: 18px; }
+      .section { padding: 72px 0; }
+      .section-header { margin-bottom: 40px; }
+      .hero { padding-top: calc(var(--header-h) + 40px); }
+      .hero-ctas .btn { width: 100%; }
+      .trust-bar { flex-direction: column; gap: 10px; }
+      .feature-grid, .review-grid, .journey, .pillars { grid-template-columns: 1fr; }
+      .feature-card, .course-card, .review-card, .enquiry-card { padding: 26px; }
+      .course-title-row { flex-direction: column; gap: 10px; }
+      .project-visual { height: 170px; }
+      .project-body { padding: 22px; }
+      .founder-visual { aspect-ratio: 1 / 1; }
+      .form-grid { grid-template-columns: 1fr; gap: 20px; }
+      .choice-group--course, .choice-group--status { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; }
+      .hero-visual__pill { font-size: 0.75rem; padding: 8px 12px; }
+      .hero-visual__pill--top { left: 0; }
+      .hero-visual__pill--bottom { right: 0; }
+      .sub-heading { margin: 64px 0 24px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       HEADER / NAVIGATION
+       ============================================================ -->
+  <header class="site-header" id="top">
+    <div class="container nav">
+      <a href="#top" class="brand" aria-label="Astra Software Training and Placements home">
+        <img src="astra-logo.png" alt="Astra Software Training &amp; Placements logo" height="36" id="brandLogo">
+        <span class="brand-text" id="brandText">Astra</span>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" id="menuToggle">
+        <span></span>
+      </button>
+
+      <nav aria-label="Primary">
+        <ul class="nav-links" id="primary-nav">
+          <li><a href="#top" data-nav>Home</a></li>
+          <li><a href="#why-astra" data-nav>Why Astra</a></li>
+          <li><a href="#courses" data-nav>Courses</a></li>
+          <li><a href="#training" data-nav>Training</a></li>
+          <li><a href="#projects" data-nav>Projects</a></li>
+          <li><a href="#founder" data-nav>About</a></li>
+          <li><a href="#reviews" data-nav>Reviews</a></li>
+          <li><a href="#enquiry" data-nav>Contact</a></li>
+        </ul>
+      </nav>
+
+      <a href="#enquiry" class="btn btn--primary nav-cta">Enquire Now</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="glow glow--cyan" style="width:380px;height:380px;top:8%;left:22%;"></div>
+      <div class="glow glow--blue" style="width:450px;height:450px;bottom:-10%;right:-6%;"></div>
+
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Astra Software Training &amp; Placements</span>
+          <h1 id="hero-title">
+            Learn Tech.<br>
+            Build Real Skills.<br>
+            <span class="gradient-text">Launch Your Career.</span>
+          </h1>
+          <p class="hero-lead">
+            Software development training, Generative AI courses, industry-oriented learning,
+            practical projects, and career preparation, all in one academy.
+          </p>
+          <div class="hero-ctas">
+            <a href="#courses" class="btn btn--primary">Explore Courses</a>
+            <a href="#enquiry" class="btn btn--ghost">Enquire Now</a>
+          </div>
+
+          <!-- Trust bar: copy to be confirmed; placeholders kept until supplied -->
+          <div class="trust-bar">
+            <span class="trust-item">[Trust point 1 — to confirm]</span>
+            <span class="trust-item">[Trust point 2 — to confirm]</span>
+            <span class="trust-item">[Trust point 3 — to confirm]</span>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-visual__core"></div>
+          <span class="hero-visual__pill hero-visual__pill--top">Generative AI</span>
+          <span class="hero-visual__pill hero-visual__pill--bottom">MERN Stack</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHY ASTRA / KEY BENEFITS
+         ============================================================ -->
+    <section class="section" id="why-astra" aria-labelledby="why-title">
+      <div class="glow glow--blue" style="width:320px;height:320px;top:10%;right:-80px;"></div>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-header reveal">
+          <span class="eyebrow">Why Astra</span>
+          <h2 class="section-title" id="why-title">Built for learners who want <span class="gradient-text">real-world readiness</span></h2>
+          <p class="section-sub">Practical training, guided by working professionals, and supported all the way to your first role.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="glass feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">&#9733;</div>
+            <h3>Training by Working Professionals</h3>
+            <p>Learn industry-relevant concepts and workflows from professionals with practical experience building live enterprise applications.</p>
+          </article>
+          <article class="glass feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">&#10070;</div>
+            <h3>Hands-On Project-Based Learning</h3>
+            <p>Apply your skills immediately through targeted assignments, progressive coding exercises, and full practical client projects.</p>
+          </article>
+          <article class="glass feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">&#9881;</div>
+            <h3>Industry-Oriented Training</h3>
+            <p>Build high-demand knowledge strictly aligned with modern software engineering conventions, Git workflows, and production technology stacks.</p>
+          </article>
+          <article class="glass feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">&#128188;</div>
+            <h3>Interview &amp; Placement Preparation</h3>
+            <p>Master technical interview rounds, algorithmic problem solving, clear communication, and high-confidence mock performance reviews.</p>
+          </article>
+          <article class="glass feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">&#129309;</div>
+            <h3>Job Assistance</h3>
+            <p>Receive structured career guidance, recruiter networking methodologies, and tailored support in identifying relevant job opportunities.</p>
+          </article>
+          <article class="glass feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">&#128214;</div>
+            <h3>Portfolio &amp; Resume Development</h3>
+            <p>Showcase tangible skills through deployed live projects, immaculate GitHub documentation, and an ATS-optimized professional resume.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         COURSES
+         ============================================================ -->
+    <section class="section" id="courses" aria-labelledby="courses-title">
+      <div class="glow glow--cyan" style="width:360px;height:360px;top:5%;left:-100px;"></div>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-header reveal">
+          <span class="eyebrow">Courses</span>
+          <h2 class="section-title" id="courses-title">Choose your <span class="gradient-text">learning path</span></h2>
+          <p class="section-sub">Two focused programmes, each built around guided projects and career preparation.</p>
+        </div>
+
+        <div class="course-grid">
+          <!-- Course 1: Generative AI (featured) -->
+          <article class="glass course-card course-card--featured reveal" aria-labelledby="course-ai">
+            <div class="glow glow--cyan"></div>
+            <div class="course-badges">
+              <span class="tag" style="color:var(--accent);border-color:rgba(34,211,238,0.4);">Featured Course</span>
+              <span class="course-meta">&#9201; 1 Month</span>
+            </div>
+            <div class="course-title-row">
+              <h3 id="course-ai">Generative AI</h3>
+              <span class="course-price">&#8377;4,999</span>
+            </div>
+            <p class="course-desc">Learn Generative AI fundamentals, LLMs, prompt engineering, modern AI tools, and practical AI application development through guided projects.</p>
+            <p class="course-topics-label">Curriculum highlights</p>
+            <div class="course-topics">
+              <span class="tag">Generative AI fundamentals</span>
+              <span class="tag">LLMs</span>
+              <span class="tag">Prompt engineering</span>
+              <span class="tag">Modern AI tools</span>
+              <span class="tag">AI application development</span>
+            </div>
+            <div class="course-cta">
+              <a href="#enquiry" class="btn btn--primary btn--block" data-course="Generative AI">Enquire About This Course</a>
+            </div>
+          </article>
+
+          <!-- Course 2: MERN Stack -->
+          <article class="glass course-card reveal" aria-labelledby="course-mern">
+            <div class="glow glow--blue"></div>
+            <div class="course-badges">
+              <span class="tag">Full Stack</span>
+              <span class="course-meta">&#9201; 3 Months</span>
+            </div>
+            <div class="course-title-row">
+              <h3 id="course-mern">MERN Stack Development</h3>
+              <span class="course-price">&#8377;39,000</span>
+            </div>
+            <p class="course-desc">Learn full-stack web development using MongoDB, Express.js, React.js, and Node.js, with hands-on coding, real-world projects, and portfolio development.</p>
+            <p class="course-topics-label">Curriculum highlights</p>
+            <div class="course-topics">
+              <span class="tag">MongoDB</span>
+              <span class="tag">Express.js</span>
+              <span class="tag">React.js</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">Portfolio development</span>
+            </div>
+            <div class="course-cta">
+              <a href="#enquiry" class="btn btn--primary btn--block" data-course="MERN Stack Development">Enquire About This Course</a>
+            </div>
+          </article>
+        </div>
+
+        <!-- Learning journey (5 stages) -->
+        <h3 class="sub-heading reveal">Your learning journey</h3>
+        <div class="journey">
+          <article class="glass journey-step reveal">
+            <span class="journey-step__num">01</span>
+            <h4>Learn</h4>
+            <p>Understand foundational &amp; advanced concepts through guided instruction by active practitioners.</p>
+            <div class="journey-step__bar"></div>
+          </article>
+          <article class="glass journey-step reveal">
+            <span class="journey-step__num">02</span>
+            <h4>Practice</h4>
+            <p>Strengthen conceptual muscle memory with rigorous coding exercises, drills, and assignments.</p>
+            <div class="journey-step__bar"></div>
+          </article>
+          <article class="glass journey-step reveal">
+            <span class="journey-step__num">03</span>
+            <h4>Build</h4>
+            <p>Create robust practical software projects modeled directly on enterprise client requirements.</p>
+            <div class="journey-step__bar"></div>
+          </article>
+          <article class="glass journey-step reveal">
+            <span class="journey-step__num">04</span>
+            <h4>Showcase</h4>
+            <p>Develop a verified portfolio, deploy public demos, and display neat clean code on GitHub.</p>
+            <div class="journey-step__bar"></div>
+          </article>
+          <article class="glass journey-step reveal">
+            <span class="journey-step__num">05</span>
+            <h4>Prepare</h4>
+            <p>Refine your resume, polish technical interview communication, and achieve full job readiness.</p>
+            <div class="journey-step__bar"></div>
+          </article>
+        </div>
+
+        <!-- Supporting pillars -->
+        <div class="pillars" id="training">
+          <article class="glass pillar reveal">
+            <div class="pillar__icon" aria-hidden="true">&#9670;</div>
+            <h4>Software Dev Training</h4>
+            <p>Core programmatic paradigms and scalable modern architectures.</p>
+          </article>
+          <article class="glass pillar reveal">
+            <div class="pillar__icon" aria-hidden="true">&#9671;</div>
+            <h4>Industry Training</h4>
+            <p>Real agile workflow cycles, code reviews, and versioning standards.</p>
+          </article>
+          <article class="glass pillar reveal">
+            <div class="pillar__icon" aria-hidden="true">&#10148;</div>
+            <h4>Technical Interviews</h4>
+            <p>Deep-dive live problem solving sessions and system design mockups.</p>
+          </article>
+          <article class="glass pillar reveal">
+            <div class="pillar__icon" aria-hidden="true">&#9998;</div>
+            <h4>Resume &amp; Portfolio</h4>
+            <p>Curated narrative building showcasing verified technological competence.</p>
+          </article>
+          <article class="glass pillar reveal">
+            <div class="pillar__icon" aria-hidden="true">&#127919;</div>
+            <h4>Job Assistance</h4>
+            <p>Direct career advisory, opportunity scouting, and application mentorship.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PROJECTS & INDUSTRY EXPERIENCE
+         ============================================================ -->
+    <section class="section" id="projects" aria-labelledby="projects-title">
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-header reveal">
+          <span class="eyebrow">Projects &amp; Industry Experience</span>
+          <h2 class="section-title" id="projects-title">Work on projects that <span class="gradient-text">look like the real thing</span></h2>
+          <p class="section-sub">Examples of the kinds of applications our learners build and study during training.</p>
+        </div>
+
+        <div class="project-grid">
+          <article class="glass project-card project-card--large reveal">
+            <div class="project-visual">
+              <span class="tag project-visual__label">Featured Project</span>
+            </div>
+            <div class="project-body">
+              <h3>Pondy Painters</h3>
+              <p>Full-scale commercial web portal delivering automated instant painting estimates, lead generation, booking scheduling, and high-performance mobile UI.</p>
+              <div class="project-tags">
+                <span class="tag">Estimates</span>
+                <span class="tag">Lead generation</span>
+                <span class="tag">Booking</span>
+              </div>
+              <a href="#" class="btn-link">View project &rarr;</a>
+            </div>
+          </article>
+
+          <article class="glass project-card project-card--medium reveal">
+            <div class="project-visual project-visual--alt-1"></div>
+            <div class="project-body">
+              <h3>Enritz Construction Company</h3>
+              <p>High-end modern architectural portfolio and project tracker showcasing residential developments with interactive gallery and dynamic inquiry handling.</p>
+              <div class="project-tags">
+                <span class="tag">Portfolio</span>
+                <span class="tag">Gallery</span>
+                <span class="tag">Inquiries</span>
+              </div>
+              <a href="#" class="btn-link">View project &rarr;</a>
+            </div>
+          </article>
+
+          <article class="glass project-card project-card--half reveal">
+            <div class="project-visual project-visual--alt-2"></div>
+            <div class="project-body">
+              <h3>Marketing Agency Project</h3>
+              <p>Conversion-focused digital marketing portal featuring high-speed SSR, dynamic lead capture flows, and connected analytics pipeline.</p>
+              <div class="project-tags">
+                <span class="tag">SSR</span>
+                <span class="tag">Lead capture</span>
+                <span class="tag">Analytics</span>
+              </div>
+              <a href="#" class="btn-link">View project &rarr;</a>
+            </div>
+          </article>
+
+          <article class="glass project-card project-card--half reveal">
+            <div class="project-visual project-visual--alt-3"></div>
+            <div class="project-body">
+              <h3>Stock Brokers Project</h3>
+              <p>Fintech dashboard and real-time trade monitoring interface utilizing WebSockets for low-latency market data streams and live portfolio metrics.</p>
+              <div class="project-tags">
+                <span class="tag">WebSockets</span>
+                <span class="tag">Fintech</span>
+                <span class="tag">Live data</span>
+              </div>
+              <a href="#" class="btn-link">View project &rarr;</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FOUNDER
+         ============================================================ -->
+    <section class="section" id="founder" aria-labelledby="founder-title">
+      <div class="glow glow--cyan" style="width:340px;height:340px;bottom:0;left:-80px;"></div>
+      <div class="container founder-grid" style="position:relative;z-index:1;">
+        <div class="reveal">
+          <div class="founder-visual" role="img" aria-label="Founder portrait placeholder">
+            <span class="founder-visual__initial" aria-hidden="true">M</span>
+            <div class="glass founder-badge">
+              <div>
+                <strong>Madhan</strong>
+                <span>Founder, Astra Software Training &amp; Placements</span>
+              </div>
+              <a href="https://www.instagram.com/voice_of_madhan" target="_blank" rel="noopener noreferrer" aria-label="Instagram: @voice_of_madhan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="founder-content reveal">
+          <span class="eyebrow">About the Founder</span>
+          <h2>Meet the Founder</h2>
+          <p class="founder-role">Madhan — Founder, Astra Software Training &amp; Placements</p>
+          <div class="founder-highlights">
+            <span class="tag">AI Developer</span>
+            <span class="tag">Freelancer</span>
+            <span class="tag">Tech &amp; Career Influencer</span>
+          </div>
+          <p class="founder-bio">
+            Madhan is an AI and software developer, freelancer, and tech content creator passionate about helping learners build practical skills and understand the evolving technology industry. Through Astra, he aims to connect learning with real-world projects and career preparation.
+          </p>
+          <div class="founder-social">
+            <a class="social-link" href="https://www.instagram.com/voice_of_madhan" target="_blank" rel="noopener noreferrer">
+              <span class="social-link__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+              </span>
+              <span>
+                Instagram
+                <small>@voice_of_madhan</small>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STUDENT REVIEWS (text only)
+         Reviews below are CLEARLY MARKED PLACEHOLDERS.
+         Replace with actual student reviews when supplied.
+         ============================================================ -->
+    <section class="section" id="reviews" aria-labelledby="reviews-title">
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-header reveal">
+          <span class="eyebrow">Student Reviews</span>
+          <h2 class="section-title" id="reviews-title">What our <span class="gradient-text">learners say</span></h2>
+          <p class="section-sub">Text-only reviews from students.</p>
+        </div>
+
+        <div class="review-grid">
+          <article class="glass review-card reveal">
+            <div class="review-stars" aria-label="Rating placeholder">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="review-text">
+              <span class="review-placeholder">[Placeholder: replace with an actual student review, e.g. about prompt engineering and building LLM applications.]</span>
+            </p>
+            <div class="review-author">[Student name, course — placeholder]</div>
+          </article>
+          <article class="glass review-card reveal">
+            <div class="review-stars" aria-label="Rating placeholder">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="review-text">
+              <span class="review-placeholder">[Placeholder: replace with an actual student review, e.g. about building full-stack projects and a GitHub portfolio.]</span>
+            </p>
+            <div class="review-author">[Student name, course — placeholder]</div>
+          </article>
+          <article class="glass review-card reveal">
+            <div class="review-stars" aria-label="Rating placeholder">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="review-text">
+              <span class="review-placeholder">[Placeholder: replace with an actual student review, e.g. about training by working professionals.]</span>
+            </p>
+            <div class="review-author">[Student name, course — placeholder]</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         COURSE ENQUIRY FORM
+         ============================================================ -->
+    <section class="section enquiry-wrap" id="enquiry" aria-labelledby="enquiry-title">
+      <div class="glow glow--blue" style="width:420px;height:420px;top:10%;right:-120px;"></div>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-header reveal">
+          <span class="eyebrow">Course Enquiry</span>
+          <h2 class="section-title" id="enquiry-title">Get course <span class="gradient-text">information</span></h2>
+          <p class="section-sub">Tell us a little about yourself and the course you're interested in. We'll get back to you on WhatsApp or email.</p>
+        </div>
+
+        <div class="glass enquiry-card reveal">
+          <form id="enquiryForm" novalidate>
+            <div class="form-grid">
+
+              <div class="form-field">
+                <label class="form-label" for="name">Full Name<span class="req" aria-hidden="true">*</span></label>
+                <input class="form-input" type="text" id="name" name="name" placeholder="e.g. Rahul Sharma" autocomplete="name" required maxlength="100">
+                <span class="field-error" id="name-error" role="alert"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="whatsapp">WhatsApp Number<span class="req" aria-hidden="true">*</span></label>
+                <input class="form-input" type="tel" id="whatsapp" name="whatsapp" placeholder="98765 43210" autocomplete="tel" required maxlength="20">
+                <span class="field-error" id="whatsapp-error" role="alert"></span>
+              </div>
+
+              <div class="form-field form-field--full">
+                <label class="form-label" for="email">Email Address<span class="req" aria-hidden="true">*</span></label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="name@domain.com" autocomplete="email" required maxlength="150">
+                <span class="field-error" id="email-error" role="alert"></span>
+              </div>
+
+              <fieldset class="form-field form-field--full" style="border:0;padding:0;margin:0;">
+                <legend class="form-label" style="margin-bottom:8px;">Course Interested In<span class="req" aria-hidden="true">*</span></legend>
+                <div class="choice-group choice-group--course">
+                  <label class="choice">
+                    <input type="radio" name="course" value="Generative AI">
+                    <span>Generative AI</span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="course" value="MERN Stack Development">
+                    <span>MERN Stack Development</span>
+                  </label>
+                </div>
+                <span class="field-error" id="course-error" role="alert"></span>
+              </fieldset>
+
+              <fieldset class="form-field form-field--full" style="border:0;padding:0;margin:0;">
+                <legend class="form-label" style="margin-bottom:8px;">Current Status<span class="req" aria-hidden="true">*</span></legend>
+                <div class="choice-group choice-group--status">
+                  <label class="choice">
+                    <input type="radio" name="status" value="Student">
+                    <span>Student</span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="status" value="Graduate">
+                    <span>Graduate</span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="status" value="Working Professional">
+                    <span>Working Professional</span>
+                  </label>
+                </div>
+                <span class="field-error" id="status-error" role="alert"></span>
+              </fieldset>
+
+              <div class="form-field form-field--full">
+                <label class="form-label" for="message">Message or Query</label>
+                <textarea class="form-textarea" id="message" name="message" placeholder="Tell us about your learning goals or ask any question..." maxlength="1000"></textarea>
+                <span class="field-error" id="message-error" role="alert"></span>
+              </div>
+            </div>
+
+            <div class="form-submit">
+              <button type="submit" class="btn btn--primary btn--block" id="submitBtn">Submit Enquiry</button>
+            </div>
+
+            <p class="form-note">Your details are used only to respond to your enquiry.</p>
+
+            <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="whatsapp-channel">
+            <a class="btn btn--ghost" href="#" target="_blank" rel="noopener noreferrer">Join our WhatsApp Channel</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#top" class="brand" aria-label="Astra home">
+            <img src="astra-logo.png" alt="Astra Software Training &amp; Placements logo" height="36" class="footer-logo" data-fallback="footerText">
+          </a>
+          <p>Software development training, Generative AI courses, and career preparation for the next generation of developers.</p>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/voice_of_madhan" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#top">Home</a></li>
+            <li><a href="#courses">Courses</a></li>
+            <li><a href="#training">Training</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#founder">About</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#enquiry">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Courses</h3>
+          <ul>
+            <li><a href="#courses">Generative AI</a></li>
+            <li><a href="#courses">MERN Stack Development</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Contact &amp; Connect</h3>
+          <ul>
+            <li class="contact-line">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              <a href="mailto:contact@astratraining.in">contact@astratraining.in</a>
+            </li>
+            <li class="contact-line">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg>
+              <a href="https://www.instagram.com/voice_of_madhan" target="_blank" rel="noopener noreferrer">@voice_of_madhan</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; <span id="year"></span> Astra Software Training &amp; Placements. All rights reserved.</span>
+        <nav aria-label="Legal">
+          <a href="#top">Back to top</a>
+          <a href="#enquiry">Enquire</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SCRIPT (inline, at bottom of file)
+       ============================================================ -->
+  <script>
+    /* ----------------------------------------------------------
+       CONFIGURATION
+       SCRIPT_URL: the deployed Google Apps Script Web App URL.
+       ---------------------------------------------------------- */
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPKtkY9CMPnLRjRaGF2MnkHmuCgmqNMyti-GK4qmARWgKfZZO5zCLYv6miekBaXUuI/exec";
+
+    /* ----------------------------------------------------------
+       HELPERS
+       ---------------------------------------------------------- */
+    const $ = (selector, scope = document) => scope.querySelector(selector);
+    const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+    /* ----------------------------------------------------------
+       LOGO FALLBACK
+       If astra-logo.png is not found next to index.html,
+       show the text wordmark instead (image proportions untouched).
+       ---------------------------------------------------------- */
+    function setupLogoFallback() {
+      const headerLogo = $("#brandLogo");
+      const headerText = $("#brandText");
+      const footerLogo = $(".footer-logo");
+
+      const showText = (img, textEl) => {
+        img.style.display = "none";
+        if (textEl) textEl.classList.add("is-visible");
+      };
+
+      if (headerLogo) {
+        headerLogo.addEventListener("error", () => showText(headerLogo, headerText));
+        // If the image already failed before this script ran (rare), handle it
+        if (headerLogo.complete && headerLogo.naturalWidth === 0) showText(headerLogo, headerText);
+      }
+      if (footerLogo) {
+        footerLogo.addEventListener("error", () => {
+          const fallback = document.createElement("span");
+          fallback.className = "brand-text is-visible";
+          fallback.textContent = "Astra";
+          footerLogo.replaceWith(fallback);
+        });
+      }
+    }
+
+    /* ----------------------------------------------------------
+       MOBILE NAVIGATION
+       ---------------------------------------------------------- */
+    function setupMobileNav() {
+      const toggle = $("#menuToggle");
+      const menu = $("#primary-nav");
+
+      toggle.addEventListener("click", () => {
+        const isOpen = menu.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      // Close the menu after tapping a link
+      $$("#primary-nav a").forEach((link) => {
+        link.addEventListener("click", () => {
+          menu.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
+
+    /* ----------------------------------------------------------
+       ACTIVE NAV LINK (highlights the section in view)
+       ---------------------------------------------------------- */
+    function setupActiveNav() {
+      const links = $$("[data-nav]");
+      const sections = links
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      if (!("IntersectionObserver" in window)) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          links.forEach((link) => {
+            link.classList.toggle("is-active", link.getAttribute("href") === "#" + entry.target.id);
+          });
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+
+      sections.forEach((section) => observer.observe(section));
+    }
+
+    /* ----------------------------------------------------------
+       SCROLL REVEAL
+       ---------------------------------------------------------- */
+    function setupReveal() {
+      const items = $$(".reveal");
+      if (!("IntersectionObserver" in window)) {
+        items.forEach((el) => el.classList.add("is-visible"));
+        return;
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      items.forEach((el) => observer.observe(el));
+    }
+
+    /* ----------------------------------------------------------
+       COURSE BUTTONS: preselect the matching course in the form
+       ---------------------------------------------------------- */
+    function setupCoursePreselect() {
+      $$("[data-course]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const courseName = btn.getAttribute("data-course");
+          const radio = $(`input[name="course"][value="${courseName}"]`);
+          if (radio) radio.checked = true;
+        });
+      });
+    }
+
+    /* ----------------------------------------------------------
+       FORM VALIDATION
+       ---------------------------------------------------------- */
+    const form = $("#enquiryForm");
+    const submitBtn = $("#submitBtn");
+    const statusBox = $("#formStatus");
+    let isSubmitting = false; // prevents duplicate submissions
+
+    const WHATSAPP_PATTERN = /^[0-9+\-\s()]+$/;
+    const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function setFieldError(fieldId, message) {
+      const input = document.getElementById(fieldId);
+      const errorEl = document.getElementById(fieldId + "-error");
+      if (input) input.setAttribute("aria-invalid", message ? "true" : "false");
+      if (errorEl) errorEl.textContent = message || "";
+    }
+
+    function validateForm(values) {
+      let valid = true;
+
+      // Full name
+      if (!values.name) { setFieldError("name", "Please enter your full name."); valid = false; }
+      else setFieldError("name", "");
+
+      // WhatsApp number: allowed characters and 7–15 digits
+      const digits = values.whatsapp.replace(/\D/g, "");
+      if (!values.whatsapp) { setFieldError("whatsapp", "Please enter your WhatsApp number."); valid = false; }
+      else if (!WHATSAPP_PATTERN.test(values.whatsapp) || digits.length < 7 || digits.length > 15) {
+        setFieldError("whatsapp", "Please enter a valid WhatsApp number."); valid = false;
+      }
+      else setFieldError("whatsapp", "");
+
+      // Email
+      if (!values.email) { setFieldError("email", "Please enter your email address."); valid = false; }
+      else if (!EMAIL_PATTERN.test(values.email)) { setFieldError("email", "Please enter a valid email address."); valid = false; }
+      else setFieldError("email", "");
+
+      // Course
+      const courseError = document.getElementById("course-error");
+      if (!values.course) { courseError.textContent = "Please select a course."; valid = false; }
+      else courseError.textContent = "";
+
+      // Status
+      const statusError = document.getElementById("status-error");
+      if (!values.status) { statusError.textContent = "Please select your current status."; valid = false; }
+      else statusError.textContent = "";
+
+      return valid;
+    }
+
+    function readFormValues() {
+      const data = new FormData(form);
+      return {
+        name: (data.get("name") || "").toString().trim(),
+        whatsapp: (data.get("whatsapp") || "").toString().trim(),
+        email: (data.get("email") || "").toString().trim(),
+        course: (data.get("course") || "").toString(),
+        status: (data.get("status") || "").toString(),
+        message: (data.get("message") || "").toString().trim()
+      };
+    }
+
+    /* ----------------------------------------------------------
+       SUCCESS / ERROR STATES
+       ---------------------------------------------------------- */
+    function showStatus(type, message) {
+      statusBox.className = "form-status " + (type === "success" ? "is-success" : "is-error");
+      statusBox.textContent = message;
+    }
+
+    function showSuccess() {
+      showStatus("success", "Thank you! Your enquiry has been received. We will contact you shortly.");
+      form.reset();
+      $$("input[aria-invalid], textarea[aria-invalid]").forEach((el) => el.setAttribute("aria-invalid", "false"));
+    }
+
+    function showError() {
+      showStatus("error", "Sorry, we could not send your enquiry. Please check your connection and try again.");
+    }
+
+    function setSubmitting(state) {
+      isSubmitting = state;
+      submitBtn.disabled = state;
+      submitBtn.textContent = state ? "Submitting..." : "Submit Enquiry";
+    }
+
+    /* ----------------------------------------------------------
+       FORM SUBMISSION (GET only, no-cors, opaque response)
+       Do not change these fetch rules.
+       ---------------------------------------------------------- */
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (isSubmitting) return; // block duplicate submissions
+
+      statusBox.className = "form-status";
+      statusBox.textContent = "";
+
+      const values = readFormValues();
+      if (!validateForm(values)) {
+        showStatus("error", "Please correct the highlighted fields and try again.");
+        const firstInvalid = form.querySelector('[aria-invalid="true"]') || document.querySelector(".field-error:not(:empty)");
+        if (firstInvalid && firstInvalid.focus) firstInvalid.focus();
+        return;
+      }
+
+      const { name, whatsapp, email, course, status, message } = values;
+      const url = SCRIPT_URL + "?" + new URLSearchParams({ name, whatsapp, email, course, status, message });
+
+      setSubmitting(true);
+
+      fetch(url, { method: "GET", mode: "no-cors" })
+        .then(() => showSuccess())
+        .catch(() => showError())
+        .finally(() => setSubmitting(false));
+    });
+
+    // Clear a field's error as soon as the user edits it
+    form.addEventListener("input", (event) => {
+      const target = event.target;
+      if (target.id && document.getElementById(target.id + "-error")) {
+        setFieldError(target.id, "");
+      }
+    });
+
+    /* ----------------------------------------------------------
+       INITIALISE
+       ---------------------------------------------------------- */
+    document.addEventListener("DOMContentLoaded", () => {
+      setupLogoFallback();
+      setupMobileNav();
+      setupActiveNav();
+      setupReveal();
+      setupCoursePreselect();
+      $("#year").textContent = new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
